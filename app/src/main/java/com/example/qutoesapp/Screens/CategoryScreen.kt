@@ -4,6 +4,7 @@ import android.content.pm.ModuleInfo
 import android.graphics.Paint.Align
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,14 +34,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.qutoesapp.R
 import com.example.qutoesapp.getList
+import com.example.qutoesapp.ui.theme.NavControllerRouteitem
 import com.example.qutoesapp.ui.theme.primaryColor
 import com.example.qutoesapp.ui.theme.primaryLight
 
-@Preview
+
 @Composable
-fun CategoryScreen() {
+fun CategoryScreen(navHostController: NavHostController) {
     Surface {
         Box (modifier = Modifier
             .fillMaxSize()
@@ -79,8 +82,11 @@ fun CategoryScreen() {
                 LazyColumn (modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)){
-                    items(getList()) {
-                        categorylist(it.title.toString())
+                    items(getList()) {item->
+                        categorylist(item.title.toString(), onClick = {
+                            navHostController.navigate(NavControllerRouteitem.QuoteListDetailsScreen.Route
+                            + "/${item.title}")
+                        })
                     }
                 }
             }
@@ -89,10 +95,13 @@ fun CategoryScreen() {
 }
 
 @Composable
-fun categorylist(title : String){
+fun categorylist(title : String,onClick : ()->Unit){
 
         Card(modifier = Modifier
             .height(50.dp)
+            .clickable {
+                onClick.invoke()
+            }
             .fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(
